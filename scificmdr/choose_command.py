@@ -1,14 +1,33 @@
 import PySimpleGUI as sg
 
 
-def choose_command_popup(
-    title="Choose command",
-    commands={
-        "cut": "cut selection to clipboard",
-        "copy": "copy selection to clipboard",
-        "paste": "paste selection from clipboard",
-    },
-):
+class CommandRegister:
+    def __init__(self):
+        self.commands = {}
+
+    def register(self, name, description=None):
+        """
+        Registers a command
+        """
+        if self.is_command(name):
+            raise KeyError(name + " is already a registered command.")
+        else:
+            self.commands[name] = description
+
+    def deregister(self, name):
+        """
+        Deregisters (removes) command
+        """
+        self.commands.pop(name)
+
+    def is_command(self, name):
+        return name in self.commands.keys()
+
+
+COMMANDS = CommandRegister()
+
+
+def choose_command(title="Choose command", allow_unlisted=True):
     cmd = None
 
     layout = [[sg.Input(enable_events=True, focus=True, pad=(0, 0), k="command_query")]]
@@ -46,5 +65,5 @@ def choose_command_popup(
 
 
 if __name__ == "__main__":
-    x = choose_command_popup()
+    x = choose_command()
     print(x)
