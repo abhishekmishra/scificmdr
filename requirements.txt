@@ -2,3 +2,4 @@ pysimplegui
 black
 RapidFuzz
 flake8
+sphinx
