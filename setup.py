@@ -4,5 +4,8 @@ setup(
     name="SciFiCmdr",
     version="0.0.1",
     packages=["SciFiCmdr"],
-    install_requires=["pysimplegui"],
+    install_requires=[
+        "pysimplegui",
+        "RapidFuzz"
+        ],
 )
