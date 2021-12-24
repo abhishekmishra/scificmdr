@@ -10,7 +10,8 @@ Welcome to SciFiCmdr's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   modules
+   SciFiCmdr
 
 Indices and tables
 ==================
