@@ -160,6 +160,5 @@ if __name__ == "__main__":
     register_command("pineapple", "is a yellow and green fruit")
     register_command("brinjal", "is a purple vegetable")
     print(COMMANDS.match("red"))
-    # exit(0)
     x = commander()
     print(x)
