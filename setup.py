@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(
-    name="scificmdr",
+    name="SciFiCmdr",
     version="0.0.1",
-    packages=["scificmdr"],
+    packages=["SciFiCmr"],
     install_requires=["pysimplegui"],
 )

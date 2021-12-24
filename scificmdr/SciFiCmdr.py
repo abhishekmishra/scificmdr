@@ -1,6 +1,8 @@
 import PySimpleGUI as sg
 from rapidfuzz.process import *
 
+__version__ = "0.0.1"
+
 
 class CommandRegister:
     def __init__(self):
