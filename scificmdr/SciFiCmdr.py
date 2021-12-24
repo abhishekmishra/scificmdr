@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-from rapidfuzz.process import *
+from rapidfuzz.process import extract
 
 __version__ = "0.0.1"
 
@@ -20,7 +20,9 @@ class CommandRegister:
             raise KeyError(name_lower + " is already a registered command.")
         else:
             self.commands[name_lower] = description
-            self.desc_text[name_lower] = name_lower + " : " + description.lower()
+            self.desc_text[name_lower] = (
+                name_lower + " : " + description.lower()
+            )
 
     def deregister(self, name):
         """
@@ -58,7 +60,9 @@ def is_command(name):
     return COMMANDS.is_command(name)
 
 
-def choose_command(title="Choose command", allow_unlisted=True, commands=COMMANDS):
+def choose_command(
+    title="Choose command", allow_unlisted=True, commands=COMMANDS
+):
     cmd = None
 
     layout = [
@@ -128,7 +132,8 @@ def choose_command(title="Choose command", allow_unlisted=True, commands=COMMAND
             for m in matches:
                 optls.append(commands.display(m[2]))
 
-            # TODO: changing visiblity of the result listbox breaks its size, so skipping that for now
+            # TODO: changing visiblity of the result listbox breaks its size,
+            # so skipping that for now
 
             if len(optls) > 0:
                 window["options"].update(values=optls, set_to_index=0)
