@@ -109,6 +109,8 @@ def choose_command(title="Choose command", allow_unlisted=True, commands=COMMAND
     window.TKroot.unbind_all("<<NextWindow>>")
     window.TKroot.unbind_all("<<PrevWindow>>")
     window.bind("<Tab>", "-COMPLETE_COMMAND-")
+    window.bind("<Down>", "-DOWN_ARROW-")
+    window.bind("<Up>", "-UP_ARROW-")
 
     window["query"].set_focus(force=True)
 
