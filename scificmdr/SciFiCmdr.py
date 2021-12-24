@@ -60,8 +60,8 @@ def is_command(name):
     return COMMANDS.is_command(name)
 
 
-def choose_command(
-    title="Choose command", allow_unlisted=True, commands=COMMANDS
+def commander(
+    title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS
 ):
     cmd = None
 
@@ -161,5 +161,5 @@ if __name__ == "__main__":
     register_command("brinjal", "is a purple vegetable")
     print(COMMANDS.match("red"))
     # exit(0)
-    x = choose_command()
+    x = commander()
     print(x)
