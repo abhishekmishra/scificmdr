@@ -22,6 +22,8 @@ class CommandRegister:
             self.commands[name_lower] = description
             self.desc_text[name_lower] = (
                 name_lower + " : " + description.lower()
+                if description is not None
+                else name_lower
             )
 
     def deregister(self, name):
@@ -60,9 +62,7 @@ def is_command(name):
     return COMMANDS.is_command(name)
 
 
-def commander(
-    title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS
-):
+def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
     cmd = None
 
     layout = [
