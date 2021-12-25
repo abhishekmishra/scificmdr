@@ -65,6 +65,9 @@ def is_command(name):
 def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
     cmd = None
 
+    theme_bgcolour = sg.theme_background_color()
+    print(theme_bgcolour)
+
     layout = [
         [
             sg.Input(
@@ -72,18 +75,20 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
                 focus=True,
                 pad=(0, 0),
                 font=("Helvetica", 24),
+                size=(50, 5),
                 k="query",
             )
         ],
         [
             sg.Listbox(
                 [],
-                size=(10, 5),
+                font=("Helvetica", 24),
+                size=(50, 5),
                 select_mode=sg.LISTBOX_SELECT_MODE_SINGLE,
+                auto_size_text=False,
                 expand_x=True,
                 expand_y=True,
                 no_scrollbar=True,
-                font=("Helvetica", 16),
                 k="options",
             )
         ],
@@ -100,6 +105,7 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
         element_padding=(0, 0),
         margins=(0, 0),
         alpha_channel=0.8,
+        transparent_color=theme_bgcolour,
         finalize=True,
     )
 
@@ -117,6 +123,7 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
     window.bind("<Up>", "-UP_ARROW-")
 
     window["query"].set_focus(force=True)
+    window["options"].update(visible=False)
 
     while True:
         event, values = window.read()
@@ -137,8 +144,10 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
 
             if len(optls) > 0:
                 window["options"].update(values=optls, set_to_index=0)
+                window["options"].update(visible=True)
             else:
                 window["options"].update(values=optls)
+                window["options"].update(visible=False)
         elif event == "-COMPLETE_COMMAND-":
             if len(values["options"]) > 0:
                 window["query"].update(
@@ -204,6 +213,7 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
                         window["query"].set_focus(True)
         elif event == "-SUBMIT-":
             cmd = values["query"]
+            break
 
     window.close()
     # sg.popup('You entered', text_input)
