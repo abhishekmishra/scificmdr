@@ -144,9 +144,66 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
                 window["query"].update(
                     commands.command_from_display(values["options"][0])
                 )
+        elif event == "-DOWN_ARROW-":
+            focused = window.find_element_with_focus()
+            indexes = window["options"].get_indexes()
+            opt_vals = window["options"].get_list_values()
+            if not focused or focused.Key != "options":
+                if len(opt_vals) > 0:
+                    window["options"].set_focus(True)
+                    window["options"].set_value(values=[opt_vals[0]])
+                else:
+                    window["query"].set_focus(True)
+            elif focused.Key == "options":
+                idx = None
+                if len(indexes) > 0:
+                    idx = indexes[0]
+                if idx is not None:
+                    # if reached last element cycle to the query
+                    # else select the next option
+                    if idx >= (len(opt_vals) - 1):
+                        window["query"].set_focus(True)
+                    else:
+                        window["options"].set_value(values=[opt_vals[idx + 1]])
+                else:
+                    # select first element (this should not happen
+                    # where options was focused but no index was selected)
+                    # except when there were no options
+                    if len(opt_vals) > 0:
+                        window["options"].set_value(values=[opt_vals[0]])
+                    else:
+                        window["query"].set_focus(True)
+        elif event == "-UP_ARROW-":
+            focused = window.find_element_with_focus()
+            indexes = window["options"].get_indexes()
+            opt_vals = window["options"].get_list_values()
+            if not focused or focused.Key != "options":
+                if len(opt_vals) > 0:
+                    window["options"].set_focus(True)
+                    window["options"].set_value(values=[opt_vals[-1]])
+                else:
+                    window["query"].set_focus(True)
+            elif focused.Key == "options":
+                idx = None
+                if len(indexes) > 0:
+                    idx = indexes[0]
+                if idx is not None:
+                    # if reached first element cycle to the query
+                    # else select the next option
+                    if idx <= 0:
+                        window["query"].set_focus(True)
+                    else:
+                        window["options"].set_value(values=[opt_vals[idx - 1]])
+                else:
+                    # select first element (this should not happen
+                    # where options was focused but no index was selected)
+                    # except when there were no options
+                    if len(opt_vals) > 0:
+                        window["options"].set_value(values=[opt_vals[-1]])
+                    else:
+                        window["query"].set_focus(True)
         elif event == "-SUBMIT-":
             cmd = values["query"]
-            break
 
     window.close()
     # sg.popup('You entered', text_input)
