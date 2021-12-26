@@ -10,7 +10,7 @@ class CommandRegister:
         self.commandfns = {}
         self.desc_text = {}
 
-    def register(self, name, description=None, fn=None):
+    def register(self, name, description=None):
         """
         Registers a command.
         The command is converted to lowercase before adding.
@@ -21,20 +21,28 @@ class CommandRegister:
             raise KeyError(name_lower + " is already a registered command.")
         else:
             self.commands[name_lower] = description
-            self.commandfns[name_lower] = fn
+            self.commandfns[name_lower] = []
             self.desc_text[name_lower] = (
                 name_lower + " : " + description.lower()
                 if description is not None
                 else name_lower
             )
 
+    def register_handler(self, name, fn):
+        if fn and self.is_command(name):
+            self.commandfns[name.lower()].append(fn)
+
+    def get_handlers(self, name):
+        return self.commandfns[name.lower()]
+
     def deregister(self, name):
         """
         Deregisters (removes) command
         """
-        self.commands.pop(name.lower())
-        self.desc_text.pop(name.lower())
-        self.commandfns(name.lower())
+        name_lower = name.lower()
+        self.commands.pop(name_lower)
+        self.desc_text.pop(name_lower)
+        self.commandfns.pop(name_lower)
 
     def is_command(self, name):
         return name.lower() in self.commands.keys()
@@ -49,15 +57,20 @@ class CommandRegister:
     def command_from_display(self, display_text):
         return display_text.split(" : ")[0]
 
-    def get_commandfn(self, name):
-        return self.commandfns[name.lower()]
-
 
 COMMANDS = CommandRegister()
 
 
-def register_command(name, description=None, fn=None):
-    COMMANDS.register(name, description, fn)
+def register_command(name, description=None):
+    COMMANDS.register(name, description)
+
+
+def register_handler(name, fn):
+    COMMANDS.register_handler(name, fn)
+
+
+def get_handlers(name):
+    return COMMANDS.get_handlers(name)
 
 
 def deregister_command(name):
@@ -66,19 +79,6 @@ def deregister_command(name):
 
 def is_command(name):
     return COMMANDS.is_command(name)
-
-
-def get_commandfn(name):
-    return COMMANDS.get_commandfn(name)
-
-
-# see https://stackoverflow.com/a/54030205/9483968
-def commandname(name):
-    def wrap(f):
-        setattr(f, "_command_name", name)
-        return f
-
-    return wrap
 
 
 def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
