@@ -7,9 +7,10 @@ __version__ = "0.0.1"
 class CommandRegister:
     def __init__(self):
         self.commands = {}
+        self.commandfns = {}
         self.desc_text = {}
 
-    def register(self, name, description=None):
+    def register(self, name, description=None, fn=None):
         """
         Registers a command.
         The command is converted to lowercase before adding.
@@ -20,6 +21,7 @@ class CommandRegister:
             raise KeyError(name_lower + " is already a registered command.")
         else:
             self.commands[name_lower] = description
+            self.commandfns[name_lower] = fn
             self.desc_text[name_lower] = (
                 name_lower + " : " + description.lower()
                 if description is not None
@@ -32,6 +34,7 @@ class CommandRegister:
         """
         self.commands.pop(name.lower())
         self.desc_text.pop(name.lower())
+        self.commandfns(name.lower())
 
     def is_command(self, name):
         return name.lower() in self.commands.keys()
@@ -50,8 +53,8 @@ class CommandRegister:
 COMMANDS = CommandRegister()
 
 
-def register_command(name, description=None):
-    COMMANDS.register(name, description)
+def register_command(name, description=None, fn=None):
+    COMMANDS.register(name, description, fn)
 
 
 def deregister_command(name):
@@ -60,6 +63,15 @@ def deregister_command(name):
 
 def is_command(name):
     return COMMANDS.is_command(name)
+
+
+# see https://stackoverflow.com/a/54030205/9483968
+def commandname(name):
+    def wrap(f):
+        setattr(f, "_command_name", name)
+        return f
+
+    return wrap
 
 
 def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
