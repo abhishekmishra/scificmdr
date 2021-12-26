@@ -44,10 +44,13 @@ class CommandRegister:
         return results
 
     def display(self, name):
-        return self.desc_text[name]
+        return self.desc_text[name.lower()]
 
     def command_from_display(self, display_text):
         return display_text.split(" : ")[0]
+
+    def get_commandfn(self, name):
+        return self.commandfns[name.lower()]
 
 
 COMMANDS = CommandRegister()
@@ -63,6 +66,10 @@ def deregister_command(name):
 
 def is_command(name):
     return COMMANDS.is_command(name)
+
+
+def get_commandfn(name):
+    return COMMANDS.get_commandfn(name)
 
 
 # see https://stackoverflow.com/a/54030205/9483968
