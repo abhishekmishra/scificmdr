@@ -144,6 +144,13 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
     window["query"].set_focus(force=True)
     window["options"].update(visible=False)
 
+    # don't know which of these works to bring to front
+    # and have focus when started with desktop keyboard
+    # shortcut.
+    window.bring_to_front()
+    window.force_focus()
+    window["query"].set_focus(force=True)
+
     while True:
         event, values = window.read()
 
