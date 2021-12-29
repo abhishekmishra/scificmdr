@@ -1,7 +1,11 @@
 import PySimpleGUI as sg
 from rapidfuzz.process import extract
+import logging
 
 __version__ = "0.0.1"
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class CommandRegister:
@@ -79,6 +83,70 @@ def deregister_command(name):
 
 def is_command(name):
     return COMMANDS.is_command(name)
+
+
+def run_command(command_name, **kwargs):
+    """
+    Run command given by command_name(str) with arguments window, event,
+    and values from the pysimplegui window
+
+    Parameters:
+        command_name (str): name of the command to run.
+            program will look for method '%command_name%'
+            in global scope to run.
+
+        kwargs: the arguments to the command.
+            these will be passed as-is to the command function if found.
+
+    Returns:
+        Return value of executed command function.
+
+    Throws:
+        NameError if cmd_%command_name% not found.
+    """
+    logger.debug(
+        "running command {} with args {}".format(command_name, kwargs)
+    )
+
+    if is_command(command_name) is not None:
+        cmd_handlers = get_handlers(command_name)
+        ret = None
+        for cmdfn in cmd_handlers:
+            ret = cmdfn(**kwargs)
+        return ret
+    else:
+        NameError(command_name + " is not a command")
+
+
+# see https://stackoverflow.com/a/54030205/9483968
+def cmdhandler(command=None):
+    """
+    Returns the decorator which will return the command function as-is
+    but will register the command if required and then register
+    the function as the command handler as well.
+
+    Parameters:
+        command (str): name of the command for which this function is
+            a handler. If the name is not provided, the function name
+            becomes the command name. This is to avoid repetition when
+            command name and handler are same.
+
+    Returns:
+        the decorator
+    """
+
+    def wrap(f):
+        cmdname = command
+        if cmdname is None:
+            cmdname = f.__name__
+        if not is_command(cmdname):
+            register_command(cmdname)
+            logger.info("Registered command {}".format(cmdname))
+        register_handler(cmdname, f)
+        logger.info("Registered handler {} for {}".format(f, cmdname))
+        return f
+
+    return wrap
 
 
 def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
