@@ -149,7 +149,7 @@ def cmdhandler(command=None):
     return wrap
 
 
-def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
+def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS, text="", width=30):
     cmd = None
 
     theme_bgcolour = sg.theme_background_color()
@@ -158,11 +158,12 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
     layout = [
         [
             sg.Input(
+                default_text=text,
                 enable_events=True,
                 focus=True,
                 pad=(0, 0),
                 font=("Helvetica", 24),
-                size=(50, 5),
+                size=(width, 5),
                 k="query",
             )
         ],
@@ -170,7 +171,7 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
             sg.Listbox(
                 [],
                 font=("Helvetica", 24),
-                size=(50, 5),
+                size=(width, 5),
                 select_mode=sg.LISTBOX_SELECT_MODE_SINGLE,
                 auto_size_text=False,
                 expand_x=True,
@@ -184,7 +185,7 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
     window = sg.Window(
         title,
         layout,
-        default_element_size=(50, 1),
+        default_element_size=(width, 1),
         no_titlebar=True,
         grab_anywhere=True,
         use_default_focus=False,
@@ -210,6 +211,8 @@ def commander(title="SciFiCmdr", allow_unlisted=True, commands=COMMANDS):
     window.bind("<Up>", "-UP_ARROW-")
 
     window["query"].set_focus(force=True)
+    # set the cursor at the end of the Entry widget
+    window["query"].Widget.icursor("end")
     window["options"].update(visible=False)
 
     # don't know which of these works to bring to front
